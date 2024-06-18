@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Jimmy Driftwood", "label": "Jimmy Driftwood", "shape": "dot"}, {"color": "#97c2fc", "id": "Johnny Horton", "label": "Johnny Horton", "shape": "dot"}, {"color": "#97c2fc", "id": "Henry Mancini", "label": "Henry Mancini", "shape": "dot"}, {"color": "#97c2fc", "id": "Johnny Mercer", "label": "Johnny Mercer", "shape": "dot"}, {"color": "#97c2fc", "id": "Ernest Gold", "label": "Ernest Gold", "shape": "dot"}, {"color": "#97c2fc", "id": "Ferrante \u0026 Teicher", "label": "Ferrante \u0026 Teicher", "shape": "dot"}, {"color": "#97c2fc", "id": "Douglas Cross", "label": "Douglas Cross", "shape": "dot"}, {"color": "#97c2fc", "id": "Tony Bennett", "label": "Tony Bennett", "shape": "dot"}, {"color": "#97c2fc", "id": "George Cory", "label": "George Cory", "shape": "dot"}, {"color": "#97c2fc", "id": "Leslie Bricusse", "label": "Leslie Bricusse", "shape": "dot"}, {"color": "#97c2fc", "id": "Sammy Davis Jr.", "label": "Sammy Davis Jr.", "shape": "dot"}, {"color": "#97c2fc", "id": "Anthony Newley", "label": "Anthony Newley", "shape": "dot"}, {"color": "#97c2fc", "id": "Jerry Herman", "label": "Jerry Herman", "shape": "dot"}, {"color": "#97c2fc", "id": "Louis Armstrong", "label": "Louis Armstrong", "shape": "dot"}, {"color": "#97c2fc", "id": "Johnny Mandel", "label": "Johnny Mandel", "shape": "dot"}, {"color": "#97c2fc", "id": "Paul Francis Webster", "label": "Paul Francis Webster", "shape": "dot"}, {"color": "#97c2fc", "id": "John Lennon", "label": "John Lennon", "shape": "dot"}, {"color": "#97c2fc", "id": "The 5th Dimension", "label": "The 5th Dimension", "shape": "dot"}, {"color": "#97c2fc", "id": "Paul McCartney", "label": "Paul McCartney", "shape": "dot"}, {"color": "#97c2fc", "id": "Jimmy Webb", "label": "Jimmy Webb", "shape": "dot"}, {"color": "#97c2fc", "id": "Roberta Flack", "label": "Roberta Flack", "shape": "dot"}, {"color": "#97c2fc", "id": "Bobby Russell", "label": "Bobby Russell", "shape": "dot"}, {"color": "#97c2fc", "id": "O.C. Smith", "label": "O.C. Smith", "shape": "dot"}, {"color": "#97c2fc", "id": "James Rado", "label": "James Rado", "shape": "dot"}, {"color": "#97c2fc", "id": "Gerome Ragni", "label": "Gerome Ragni", "shape": "dot"}, {"color": "#97c2fc", "id": "Galt MacDermot", "label": "Galt MacDermot", "shape": "dot"}, {"color": "#97c2fc", "id": "Paul Simon", "label": "Paul Simon", "shape": "dot"}, {"color": "#97c2fc", "id": "Simon \u0026 Garfunkel", "label": "Simon \u0026 Garfunkel", "shape": "dot"}, {"color": "#97c2fc", "id": "Carole King", "label": "Carole King", "shape": "dot"}, {"color": "#97c2fc", "id": "James Taylor", "label": "James Taylor", "shape": "dot"}, {"color": "#97c2fc", "id": "Ewan MacColl", "label": "Ewan MacColl", "shape": "dot"}, {"color": "#97c2fc", "id": "Charles Fox", "label": "Charles Fox", "shape": "dot"}, {"color": "#97c2fc", "id": "Norman Gimbel", "label": "Norman Gimbel", "shape": "dot"}, {"color": "#97c2fc", "id": "Alan Bergman", "label": "Alan Bergman", "shape": "dot"}, {"color": "#97c2fc", "id": "Luther Vandross", "label": "Luther Vandross", "shape": "dot"}, {"color": "#97c2fc", "id": "Marilyn Bergman", "label": "Marilyn Bergman", "shape": "dot"}, {"color": "#97c2fc", "id": "Marvin Hamlisch", "label": "Marvin Hamlisch", "shape": "dot"}, {"color": "#97c2fc", "id": "Barbra Streisand", "label": "Barbra Streisand", "shape": "dot"}, {"color": "#97c2fc", "id": "Neil Sedaka", "label": "Neil Sedaka", "shape": "dot"}, {"color": "#97c2fc", "id": "Howard Greenfield", "label": "Howard Greenfield", "shape": "dot"}, {"color": "#97c2fc", "id": "Christopher Cross", "label": "Christopher Cross", "shape": "dot"}, {"color": "#97c2fc", "id": "Leon Russell", "label": "Leon Russell", "shape": "dot"}, {"color": "#97c2fc", "id": "George Benson", "label": "George Benson", "shape": "dot"}, {"color": "#97c2fc", "id": "Billy Joel", "label": "Billy Joel", "shape": "dot"}, {"color": "#97c2fc", "id": "Michael McDonald", "label": "Michael McDonald", "shape": "dot"}, {"color": "#97c2fc", "id": "Kenny Loggins", "label": "Kenny Loggins", "shape": "dot"}, {"color": "#97c2fc", "id": "Donna Weiss", "label": "Donna Weiss", "shape": "dot"}, {"color": "#97c2fc", "id": "Kim Carnes", "label": "Kim Carnes", "shape": "dot"}, {"color": "#97c2fc", "id": "Johnny Christopher", "label": "Johnny Christopher", "shape": "dot"}, {"color": "#97c2fc", "id": "Willie Nelson", "label": "Willie Nelson", "shape": "dot"}, {"color": "#97c2fc", "id": "Mark Jame", "label": "Mark Jame", "shape": "dot"}, {"color": "#97c2fc", "id": "Wayne Carson", "label": "Wayne Carson", "shape": "dot"}, {"color": "#97c2fc", "id": "Sting", "label": "Sting", "shape": "dot"}, {"color": "#97c2fc", "id": "The Police", "label": "The Police", "shape": "dot"}, {"color": "#97c2fc", "id": "Terry Britten", "label": "Terry Britten", "shape": "dot"}, {"color": "#97c2fc", "id": "Tina Turner", "label": "Tina Turner", "shape": "dot"}, {"color": "#97c2fc", "id": "Graham Lyle", "label": "Graham Lyle", "shape": "dot"}, {"color": "#97c2fc", "id": "Michael Jackson", "label": "Michael Jackson", "shape": "dot"}, {"color": "#97c2fc", "id": "USA for Africa", "label": "USA for Africa", "shape": "dot"}, {"color": "#97c2fc", "id": "Lionel Richie", "label": "Lionel Richie", "shape": "dot"}, {"color": "#97c2fc", "id": "James Ingram", "label": "James Ingram", "shape": "dot"}, {"color": "#97c2fc", "id": "Linda Ronstadt", "label": "Linda Ronstadt", "shape": "dot"}, {"color": "#97c2fc", "id": "James Horner", "label": "James Horner", "shape": "dot"}, {"color": "#97c2fc", "id": "Barry Mann", "label": "Barry Mann", "shape": "dot"}, {"color": "#97c2fc", "id": "Cynthia Weil", "label": "Cynthia Weil", "shape": "dot"}, {"color": "#97c2fc", "id": "Bobby McFerrin", "label": "Bobby McFerrin", "shape": "dot"}, {"color": "#97c2fc", "id": "Larry Henley", "label": "Larry Henley", "shape": "dot"}, {"color": "#97c2fc", "id": "Jeff Silbar", "label": "Jeff Silbar", "shape": "dot"}, {"color": "#97c2fc", "id": "Bette Midler", "label": "Bette Midler", "shape": "dot"}, {"color": "#97c2fc", "id": "Julie Gold", "label": "Julie Gold", "shape": "dot"}, {"color": "#97c2fc", "id": "Natalie Cole", "label": "Natalie Cole", "shape": "dot"}, {"color": "#97c2fc", "id": "Irving Gordon", "label": "Irving Gordon", "shape": "dot"}, {"color": "#97c2fc", "id": "Eric Clapton", "label": "Eric Clapton", "shape": "dot"}, {"color": "#97c2fc", "id": "Will Jennings", "label": "Will Jennings", "shape": "dot"}, {"color": "#97c2fc", "id": "Peabo Bryson", "label": "Peabo Bryson", "shape": "dot"}, {"color": "#97c2fc", "id": "Regina Belle", "label": "Regina Belle", "shape": "dot"}, {"color": "#97c2fc", "id": "Alan Menken", "label": "Alan Menken", "shape": "dot"}, {"color": "#97c2fc", "id": "Tim Rice", "label": "Tim Rice", "shape": "dot"}, {"color": "#97c2fc", "id": "Bruce Springsteen", "label": "Bruce Springsteen", "shape": "dot"}, {"color": "#97c2fc", "id": "Seal", "label": "Seal", "shape": "dot"}, {"color": "#97c2fc", "id": "Gordon Kennedy", "label": "Gordon Kennedy", "shape": "dot"}, {"color": "#97c2fc", "id": "Wayne Kirkpatrick", "label": "Wayne Kirkpatrick", "shape": "dot"}, {"color": "#97c2fc", "id": "Tommy Sims", "label": "Tommy Sims", "shape": "dot"}, {"color": "#97c2fc", "id": "Shawn Colvin", "label": "Shawn Colvin", "shape": "dot"}, {"color": "#97c2fc", "id": "John Leventhal", "label": "John Leventhal", "shape": "dot"}, {"color": "#97c2fc", "id": "Celine Dion", "label": "Celine Dion", "shape": "dot"}, {"color": "#97c2fc", "id": "Itaal Shur", "label": "Itaal Shur", "shape": "dot"}, {"color": "#97c2fc", "id": "Rob Thomas", "label": "Rob Thomas", "shape": "dot"}, {"color": "#97c2fc", "id": "Bono", "label": "Bono", "shape": "dot"}, {"color": "#97c2fc", "id": "U2", "label": "U2", "shape": "dot"}, {"color": "#97c2fc", "id": "The Edge", "label": "The Edge", "shape": "dot"}, {"color": "#97c2fc", "id": "Adam Clayton", "label": "Adam Clayton", "shape": "dot"}, {"color": "#97c2fc", "id": "Larry Mullen Jr.", "label": "Larry Mullen Jr.", "shape": "dot"}, {"color": "#97c2fc", "id": "Alicia Keys", "label": "Alicia Keys", "shape": "dot"}, {"color": "#97c2fc", "id": "Jesse Harris", "label": "Jesse Harris", "shape": "dot"}, {"color": "#97c2fc", "id": "Norah Jones", "label": "Norah Jones", "shape": "dot"}, {"color": "#97c2fc", "id": "Richard Marx", "label": "Richard Marx", "shape": "dot"}, {"color": "#97c2fc", "id": "Dixie Chicks", "label": "Dixie Chicks", "shape": "dot"}, {"color": "#97c2fc", "id": "Martie Maguire", "label": "Martie Maguire", "shape": "dot"}, {"color": "#97c2fc", "id": "Natalie Maines", "label": "Natalie Maines", "shape": "dot"}, {"color": "#97c2fc", "id": "Emily Robison", "label": "Emily Robison", "shape": "dot"}, {"color": "#97c2fc", "id": "Dan Wilson", "label": "Dan Wilson", "shape": "dot"}, {"color": "#97c2fc", "id": "Amy Winehouse", "label": "Amy Winehouse", "shape": "dot"}, {"color": "#97c2fc", "id": "", "label": "", "shape": "dot"}, {"color": "#97c2fc", "id": "Coldplay", "label": "Coldplay", "shape": "dot"}, {"color": "#97c2fc", "id": "Guy Berryman", "label": "Guy Berryman", "shape": "dot"}, {"color": "#97c2fc", "id": "Jonny Buckland", "label": "Jonny Buckland", "shape": "dot"}, {"color": "#97c2fc", "id": "Will Champion", "label": "Will Champion", "shape": "dot"}, {"color": "#97c2fc", "id": "Chris Martin", "label": "Chris Martin", "shape": "dot"}, {"color": "#97c2fc", "id": "Beyonc\u00e9", "label": "Beyonc\u00e9", "shape": "dot"}, {"color": "#97c2fc", "id": "Thaddis Harrell", "label": "Thaddis Harrell", "shape": "dot"}, {"color": "#97c2fc", "id": "Terius Nash", "label": "Terius Nash", "shape": "dot"}, {"color": "#97c2fc", "id": "Christopher Stewart", "label": "Christopher Stewart", "shape": "dot"}, {"color": "#97c2fc", "id": "Charles Kelley", "label": "Charles Kelley", "shape": "dot"}, {"color": "#97c2fc", "id": "Lady Antebellum", "label": "Lady Antebellum", "shape": "dot"}, {"color": "#97c2fc", "id": "Dave Haywood", "label": "Dave Haywood", "shape": "dot"}, {"color": "#97c2fc", "id": "Josh Kear", "label": "Josh Kear", "shape": "dot"}, {"color": "#97c2fc", "id": "Adele", "label": "Adele", "shape": "dot"}, {"color": "#97c2fc", "id": "Paul Epworth", "label": "Paul Epworth", "shape": "dot"}, {"color": "#97c2fc", "id": "Fun", "label": "Fun", "shape": "dot"}, {"color": "#97c2fc", "id": "Janelle Mon\u00e1e", "label": "Janelle Mon\u00e1e", "shape": "dot"}, {"color": "#97c2fc", "id": "Jack Antonoff", "label": "Jack Antonoff", "shape": "dot"}, {"color": "#97c2fc", "id": "Jeff Bhasker", "label": "Jeff Bhasker", "shape": "dot"}, {"color": "#97c2fc", "id": "Andrew Dost", "label": "Andrew Dost", "shape": "dot"}, {"color": "#97c2fc", "id": "Nate Ruess", "label": "Nate Ruess", "shape": "dot"}, {"color": "#97c2fc", "id": "Joel Little", "label": "Joel Little", "shape": "dot"}, {"color": "#97c2fc", "id": "Lorde", "label": "Lorde", "shape": "dot"}, {"color": "#97c2fc", "id": "Ella Yelich-O\u0027Connor", "label": "Ella Yelich-O\u0027Connor", "shape": "dot"}, {"color": "#97c2fc", "id": "James Napier", "label": "James Napier", "shape": "dot"}, {"color": "#97c2fc", "id": "Sam Smith", "label": "Sam Smith", "shape": "dot"}, {"color": "#97c2fc", "id": "William Phillips", "label": "William Phillips", "shape": "dot"}, {"color": "#97c2fc", "id": "Amy Wadge", "label": "Amy Wadge", "shape": "dot"}, {"color": "#97c2fc", "id": "Ed Sheeran", "label": "Ed Sheeran", "shape": "dot"}, {"color": "#97c2fc", "id": "Greg Kurstin", "label": "Greg Kurstin", "shape": "dot"}, {"color": "#97c2fc", "id": "Bruno Mars", "label": "Bruno Mars", "shape": "dot"}, {"color": "#97c2fc", "id": "Christopher Brody Brown", "label": "Christopher Brody Brown", "shape": "dot"}, {"color": "#97c2fc", "id": "James Fauntleroy", "label": "James Fauntleroy", "shape": "dot"}, {"color": "#97c2fc", "id": "Philip Lawrence", "label": "Philip Lawrence", "shape": "dot"}, {"color": "#97c2fc", "id": "Childish Gambino", "label": "Childish Gambino", "shape": "dot"}, {"color": "#97c2fc", "id": "Donald Glover", "label": "Donald Glover", "shape": "dot"}, {"color": "#97c2fc", "id": "Ludwig G\u00f6ransson", "label": "Ludwig G\u00f6ransson", "shape": "dot"}, {"color": "#97c2fc", "id": "Billie Eilish", "label": "Billie Eilish", "shape": "dot"}, {"color": "#97c2fc", "id": "Finneas O\u0027Connell", "label": "Finneas O\u0027Connell", "shape": "dot"}, {"color": "#97c2fc", "id": "Dernst Emile II", "label": "Dernst Emile II", "shape": "dot"}, {"color": "#97c2fc", "id": "H.E.R.", "label": "H.E.R.", "shape": "dot"}, {"color": "#97c2fc", "id": "Tiara Thomas", "label": "Tiara Thomas", "shape": "dot"}, {"color": "#97c2fc", "id": "Brandon Anderson", "label": "Brandon Anderson", "shape": "dot"}, {"color": "#97c2fc", "id": "Bonnie Raitt", "label": "Bonnie Raitt", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "Jimmy Driftwood", "to": "Johnny Horton", "value": 1}, {"from": "Henry Mancini", "to": "Johnny Mercer", "value": 1}, {"from": "Ernest Gold", "to": "Ferrante \u0026 Teicher", "value": 1}, {"from": "Douglas Cross", "to": "Tony Bennett", "value": 1}, {"from": "George Cory", "to": "Tony Bennett", "value": 1}, {"from": "Douglas Cross", "to": "George Cory", "value": 1}, {"from": "Leslie Bricusse", "to": "Sammy Davis Jr.", "value": 1}, {"from": "Anthony Newley", "to": "Sammy Davis Jr.", "value": 1}, {"from": "Anthony Newley", "to": "Leslie Bricusse", "value": 1}, {"from": "Jerry Herman", "to": "Louis Armstrong", "value": 1}, {"from": "Johnny Mandel", "to": "Tony Bennett", "value": 1}, {"from": "Paul Francis Webster", "to": "Tony Bennett", "value": 1}, {"from": "Johnny Mandel", "to": "Paul Francis Webster", "value": 1}, {"from": "John Lennon", "to": "The 5th Dimension", "value": 1}, {"from": "Paul McCartney", "to": "The 5th Dimension", "value": 1}, {"from": "John Lennon", "to": "Paul McCartney", "value": 1}, {"from": "Jimmy Webb", "to": "Roberta Flack", "value": 1}, {"from": "Bobby Russell", "to": "O.C. Smith", "value": 1}, {"from": "James Rado", "to": "The 5th Dimension", "value": 1}, {"from": "Gerome Ragni", "to": "The 5th Dimension", "value": 1}, {"from": "Galt MacDermot", "to": "The 5th Dimension", "value": 1}, {"from": "Gerome Ragni", "to": "James Rado", "value": 1}, {"from": "Galt MacDermot", "to": "James Rado", "value": 1}, {"from": "Galt MacDermot", "to": "Gerome Ragni", "value": 1}, {"from": "Paul Simon", "to": "Simon \u0026 Garfunkel", "value": 1}, {"from": "Carole King", "to": "James Taylor", "value": 1}, {"from": "Ewan MacColl", "to": "Roberta Flack", "value": 1}, {"from": "Charles Fox", "to": "Roberta Flack", "value": 1}, {"from": "Norman Gimbel", "to": "Roberta Flack", "value": 1}, {"from": "Charles Fox", "to": "Norman Gimbel", "value": 1}, {"from": "Alan Bergman", "to": "Luther Vandross", "value": 1}, {"from": "Luther Vandross", "to": "Marilyn Bergman", "value": 1}, {"from": "Luther Vandross", "to": "Marvin Hamlisch", "value": 1}, {"from": "Alan Bergman", "to": "Marilyn Bergman", "value": 1}, {"from": "Alan Bergman", "to": "Marvin Hamlisch", "value": 1}, {"from": "Marilyn Bergman", "to": "Marvin Hamlisch", "value": 1}, {"from": "Barbra Streisand", "to": "Neil Sedaka", "value": 1}, {"from": "Barbra Streisand", "to": "Howard Greenfield", "value": 1}, {"from": "Howard Greenfield", "to": "Neil Sedaka", "value": 1}, {"from": "Christopher Cross", "to": "Leon Russell", "value": 1}, {"from": "Bobby Russell", "to": "George Benson", "value": 1}, {"from": "Billy Joel", "to": "Michael McDonald", "value": 1}, {"from": "Billy Joel", "to": "Kenny Loggins", "value": 1}, {"from": "Kenny Loggins", "to": "Michael McDonald", "value": 1}, {"from": "Christopher Cross", "to": "Christopher Cross", "value": 1}, {"from": "Donna Weiss", "to": "Kim Carnes", "value": 1}, {"from": "Kenny Loggins", "to": "Kim Carnes", "value": 1}, {"from": "Donna Weiss", "to": "Kenny Loggins", "value": 1}, {"from": "Johnny Christopher", "to": "Willie Nelson", "value": 1}, {"from": "Mark Jame", "to": "Willie Nelson", "value": 1}, {"from": "Wayne Carson", "to": "Willie Nelson", "value": 1}, {"from": "Johnny Christopher", "to": "Mark Jame", "value": 1}, {"from": "Johnny Christopher", "to": "Wayne Carson", "value": 1}, {"from": "Mark Jame", "to": "Wayne Carson", "value": 1}, {"from": "Sting", "to": "The Police", "value": 1}, {"from": "Terry Britten", "to": "Tina Turner", "value": 1}, {"from": "Graham Lyle", "to": "Tina Turner", "value": 1}, {"from": "Graham Lyle", "to": "Terry Britten", "value": 1}, {"from": "Michael Jackson", "to": "USA for Africa", "value": 1}, {"from": "Lionel Richie", "to": "USA for Africa", "value": 1}, {"from": "Lionel Richie", "to": "Michael Jackson", "value": 1}, {"from": "James Ingram", "to": "Linda Ronstadt", "value": 1}, {"from": "James Horner", "to": "Linda Ronstadt", "value": 1}, {"from": "Barry Mann", "to": "Linda Ronstadt", "value": 1}, {"from": "Cynthia Weil", "to": "Linda Ronstadt", "value": 1}, {"from": "James Horner", "to": "James Ingram", "value": 1}, {"from": "Barry Mann", "to": "James Ingram", "value": 1}, {"from": "Cynthia Weil", "to": "James Ingram", "value": 1}, {"from": "Barry Mann", "to": "James Horner", "value": 1}, {"from": "Cynthia Weil", "to": "James Horner", "value": 1}, {"from": "Barry Mann", "to": "Cynthia Weil", "value": 1}, {"from": "Bobby McFerrin", "to": "Bobby McFerrin", "value": 1}, {"from": "Bobby McFerrin", "to": "Larry Henley", "value": 1}, {"from": "Bobby McFerrin", "to": "Jeff Silbar", "value": 1}, {"from": "Jeff Silbar", "to": "Larry Henley", "value": 1}, {"from": "Bette Midler", "to": "Julie Gold", "value": 2}, {"from": "James Ingram", "to": "Natalie Cole", "value": 1}, {"from": "Irving Gordon", "to": "Natalie Cole", "value": 1}, {"from": "Irving Gordon", "to": "James Ingram", "value": 1}, {"from": "Eric Clapton", "to": "Will Jennings", "value": 1}, {"from": "Peabo Bryson", "to": "Regina Belle", "value": 1}, {"from": "Alan Menken", "to": "Peabo Bryson", "value": 1}, {"from": "Peabo Bryson", "to": "Tim Rice", "value": 1}, {"from": "Alan Menken", "to": "Regina Belle", "value": 1}, {"from": "Regina Belle", "to": "Tim Rice", "value": 1}, {"from": "Alan Menken", "to": "Tim Rice", "value": 1}, {"from": "Bruce Springsteen", "to": "Bruce Springsteen", "value": 1}, {"from": "Seal", "to": "Seal", "value": 1}, {"from": "Eric Clapton", "to": "Gordon Kennedy", "value": 1}, {"from": "Eric Clapton", "to": "Wayne Kirkpatrick", "value": 1}, {"from": "Eric Clapton", "to": "Tommy Sims", "value": 1}, {"from": "Gordon Kennedy", "to": "Wayne Kirkpatrick", "value": 1}, {"from": "Gordon Kennedy", "to": "Tommy Sims", "value": 1}, {"from": "Tommy Sims", "to": "Wayne Kirkpatrick", "value": 1}, {"from": "Shawn Colvin", "to": "Shawn Colvin", "value": 1}, {"from": "John Leventhal", "to": "Shawn Colvin", "value": 2}, {"from": "Celine Dion", "to": "James Horner", "value": 1}, {"from": "Celine Dion", "to": "Will Jennings", "value": 1}, {"from": "James Horner", "to": "Will Jennings", "value": 1}, {"from": "Itaal Shur", "to": "Rob Thomas", "value": 1}, {"from": "Bono", "to": "U2", "value": 2}, {"from": "The Edge", "to": "U2", "value": 2}, {"from": "Adam Clayton", "to": "U2", "value": 2}, {"from": "Larry Mullen Jr.", "to": "U2", "value": 2}, {"from": "Bono", "to": "The Edge", "value": 2}, {"from": "Adam Clayton", "to": "Bono", "value": 2}, {"from": "Bono", "to": "Larry Mullen Jr.", "value": 2}, {"from": "Adam Clayton", "to": "The Edge", "value": 2}, {"from": "Larry Mullen Jr.", "to": "The Edge", "value": 2}, {"from": "Adam Clayton", "to": "Larry Mullen Jr.", "value": 2}, {"from": "Alicia Keys", "to": "Alicia Keys", "value": 1}, {"from": "Jesse Harris", "to": "Norah Jones", "value": 1}, {"from": "Luther Vandross", "to": "Richard Marx", "value": 2}, {"from": "Luther Vandross", "to": "U2", "value": 1}, {"from": "Richard Marx", "to": "U2", "value": 1}, {"from": "Dixie Chicks", "to": "Martie Maguire", "value": 1}, {"from": "Dixie Chicks", "to": "Natalie Maines", "value": 1}, {"from": "Dixie Chicks", "to": "Emily Robison", "value": 1}, {"from": "Dan Wilson", "to": "Dixie Chicks", "value": 1}, {"from": "Martie Maguire", "to": "Natalie Maines", "value": 1}, {"from": "Emily Robison", "to": "Martie Maguire", "value": 1}, {"from": "Dan Wilson", "to": "Martie Maguire", "value": 1}, {"from": "Emily Robison", "to": "Natalie Maines", "value": 1}, {"from": "Dan Wilson", "to": "Natalie Maines", "value": 1}, {"from": "Dan Wilson", "to": "Emily Robison", "value": 1}, {"from": "Amy Winehouse", "to": "Amy Winehouse", "value": 1}, {"from": "", "to": "Amy Winehouse", "value": 2}, {"from": "Coldplay", "to": "Guy Berryman", "value": 1}, {"from": "Coldplay", "to": "Jonny Buckland", "value": 1}, {"from": "Coldplay", "to": "Will Champion", "value": 1}, {"from": "Chris Martin", "to": "Coldplay", "value": 1}, {"from": "Guy Berryman", "to": "Jonny Buckland", "value": 1}, {"from": "Guy Berryman", "to": "Will Champion", "value": 1}, {"from": "Chris Martin", "to": "Guy Berryman", "value": 1}, {"from": "Jonny Buckland", "to": "Will Champion", "value": 1}, {"from": "Chris Martin", "to": "Jonny Buckland", "value": 1}, {"from": "Chris Martin", "to": "Will Champion", "value": 1}, {"from": "Beyonc\u00e9", "to": "Thaddis Harrell", "value": 2}, {"from": "Beyonc\u00e9", "to": "Beyonc\u00e9", "value": 1}, {"from": "Beyonc\u00e9", "to": "Terius Nash", "value": 2}, {"from": "Beyonc\u00e9", "to": "Christopher Stewart", "value": 2}, {"from": "Terius Nash", "to": "Thaddis Harrell", "value": 1}, {"from": "Christopher Stewart", "to": "Thaddis Harrell", "value": 1}, {"from": "Christopher Stewart", "to": "Terius Nash", "value": 1}, {"from": "Charles Kelley", "to": "Lady Antebellum", "value": 2}, {"from": "Dave Haywood", "to": "Lady Antebellum", "value": 1}, {"from": "Josh Kear", "to": "Lady Antebellum", "value": 1}, {"from": "Charles Kelley", "to": "Charles Kelley", "value": 1}, {"from": "Charles Kelley", "to": "Dave Haywood", "value": 2}, {"from": "Charles Kelley", "to": "Josh Kear", "value": 2}, {"from": "Dave Haywood", "to": "Josh Kear", "value": 1}, {"from": "Adele", "to": "Paul Epworth", "value": 1}, {"from": "Fun", "to": "Rob Thomas", "value": 1}, {"from": "Fun", "to": "Janelle Mon\u00e1e", "value": 1}, {"from": "Fun", "to": "Jack Antonoff", "value": 1}, {"from": "Fun", "to": "Jeff Bhasker", "value": 1}, {"from": "Andrew Dost", "to": "Fun", "value": 1}, {"from": "Fun", "to": "Nate Ruess", "value": 1}, {"from": "Janelle Mon\u00e1e", "to": "Rob Thomas", "value": 1}, {"from": "Jack Antonoff", "to": "Rob Thomas", "value": 1}, {"from": "Jeff Bhasker", "to": "Rob Thomas", "value": 1}, {"from": "Andrew Dost", "to": "Rob Thomas", "value": 1}, {"from": "Nate Ruess", "to": "Rob Thomas", "value": 1}, {"from": "Jack Antonoff", "to": "Janelle Mon\u00e1e", "value": 1}, {"from": "Janelle Mon\u00e1e", "to": "Jeff Bhasker", "value": 1}, {"from": "Andrew Dost", "to": "Janelle Mon\u00e1e", "value": 1}, {"from": "Janelle Mon\u00e1e", "to": "Nate Ruess", "value": 1}, {"from": "Jack Antonoff", "to": "Jeff Bhasker", "value": 1}, {"from": "Andrew Dost", "to": "Jack Antonoff", "value": 1}, {"from": "Jack Antonoff", "to": "Nate Ruess", "value": 1}, {"from": "Andrew Dost", "to": "Jeff Bhasker", "value": 1}, {"from": "Jeff Bhasker", "to": "Nate Ruess", "value": 1}, {"from": "Andrew Dost", "to": "Nate Ruess", "value": 1}, {"from": "Joel Little", "to": "Lorde", "value": 1}, {"from": "Ella Yelich-O\u0027Connor", "to": "Lorde", "value": 1}, {"from": "Ella Yelich-O\u0027Connor", "to": "Joel Little", "value": 1}, {"from": "James Napier", "to": "Sam Smith", "value": 1}, {"from": "Sam Smith", "to": "William Phillips", "value": 1}, {"from": "James Napier", "to": "William Phillips", "value": 1}, {"from": "Amy Wadge", "to": "Ed Sheeran", "value": 1}, {"from": "Adele", "to": "Greg Kurstin", "value": 1}, {"from": "Bruno Mars", "to": "Christopher Brody Brown", "value": 2}, {"from": "Bruno Mars", "to": "James Fauntleroy", "value": 1}, {"from": "Bruno Mars", "to": "Philip Lawrence", "value": 1}, {"from": "Christopher Brody Brown", "to": "James Fauntleroy", "value": 1}, {"from": "Christopher Brody Brown", "to": "Philip Lawrence", "value": 1}, {"from": "James Fauntleroy", "to": "Philip Lawrence", "value": 1}, {"from": "Childish Gambino", "to": "Donald Glover", "value": 1}, {"from": "Childish Gambino", "to": "Ludwig G\u00f6ransson", "value": 1}, {"from": "Donald Glover", "to": "Ludwig G\u00f6ransson", "value": 1}, {"from": "Billie Eilish", "to": "Finneas O\u0027Connell", "value": 2}, {"from": "Dernst Emile II", "to": "H.E.R.", "value": 1}, {"from": "H.E.R.", "to": "Tiara Thomas", "value": 1}, {"from": "Dernst Emile II", "to": "Tiara Thomas", "value": 1}, {"from": "Brandon Anderson", "to": "Bruno Mars", "value": 1}, {"from": "Bruno Mars", "to": "Dernst Emile II", "value": 1}, {"from": "Brandon Anderson", "to": "Dernst Emile II", "value": 1}, {"from": "Brandon Anderson", "to": "Christopher Brody Brown", "value": 1}, {"from": "Christopher Brody Brown", "to": "Dernst Emile II", "value": 1}, {"from": "Bonnie Raitt", "to": "Bonnie Raitt", "value": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
